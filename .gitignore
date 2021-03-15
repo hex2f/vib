@@ -1,0 +1,9 @@
+*
+!LICENSE
+!*.*
+!*.v
+
+*.app
+*.ipa
+*.vib
+/Payload
