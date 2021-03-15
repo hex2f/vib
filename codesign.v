@@ -16,6 +16,12 @@ fn select_signing_identity() ?string {
 	return identities[selection.int() - 1]
 }
 
+fn get_certificate_serial(identity string) string {
+	raw_res := os.execute_or_panic('security find-certificate -c "$identity"')
+	serial := raw_res.output.all_after('"snbr"<blob>=0x').all_before(' ')
+	return serial
+}
+
 fn (c Config) sign_payload() {
 	println("Signing payload with entitlements")
 	entitlements := os.join_path('Payload', '${c.bundle_name}.entitlements')
