@@ -7,3 +7,5 @@
 *.ipa
 *.vib
 /Payload
+
+.DS_Store
