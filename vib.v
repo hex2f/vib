@@ -1,16 +1,16 @@
 module main
 
 import os
+import appstoreconnect
 
 fn main() {
-	println(os.args)
 	if os.args.len < 2 || (!os.exists(os.args[1]) && os.args[1] != 'provision') {
 		println("Error: No binary provided. Usage: vib <path to binary>")
 		return
 	}
 	if os.args[1] == 'provision' {
-		connect_config := load_connect_config() or { panic(err) }
-		println(connect_config)
+		connect_config := appstoreconnect.load_connect_config() or { panic(err) }
+		connect_config.provision_profile_wizard()
 		return
 	}
 

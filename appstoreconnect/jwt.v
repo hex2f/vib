@@ -1,4 +1,4 @@
-module main
+module appstoreconnect
 
 import json
 import time

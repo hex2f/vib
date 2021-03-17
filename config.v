@@ -1,6 +1,7 @@
 module main
 
 import os
+import certificates
 
 struct Config {
 mut:
@@ -54,7 +55,7 @@ fn config_from_file(binary_path string) ?Config {
 	if config.display_name == '' { config.display_name = config.bundle_name }
 
 	if config.codesign_identity.len <= 0 {
-		config.codesign_identity = select_signing_identity() or { return error("No code signing identity selected.") }
+		config.codesign_identity = certificates.select_signing_identity() or { return error("No code signing identity selected.") }
 	}
 	if config.provisioning_profile.len <= 0 || !os.exists(config.provisioning_profile) {
 		return error("No valid provisioning profile provided in the config.")
