@@ -17,7 +17,7 @@ codesign_identity=Apple Development: Leah Lundqvist (IDENTITY_ID)
 provisioning_profile=app_vlang_helloworld.mobileprovision
 ```
 
-### Provision Profile Wizard
+### Provisioning Profile Wizard
 
 To enable automated provisioning, you need to create an API key on [App Store Connect](https://appstoreconnect.apple.com/access/api). Save the key file to `~/.vib` and create a file called `config.vib` in the same directory containing
 ```
