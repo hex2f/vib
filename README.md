@@ -26,4 +26,4 @@ key_id=<Key ID>
 key_file=AuthKey_<Key ID>.p8
 ```
 
-Use `vib provision` to enter the provisioning profile wizard. For now you need to already have codesigning certificate on your machine. Generating and installing a new one will be automated by Vib in the future as well.
+Use `vib provision` to enter the provisioning profile wizard. For now you need to already have codesigning a certificate on your machine. Generating and installing a new one will be automated by Vib in the future as well.
