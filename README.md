@@ -1,6 +1,17 @@
 # V iOS Bundler
 A generic utility to bundle and sign iOS binaries.
 
+## Building
+
+Vib is built using [V](https://github.com/vlang/v), hence you need to install the V compiler to build it.
+```
+git clone https://github.com/vlang/v
+cd v
+make
+sudo ./v symlink  # Optional, adds V to your path so you can call `v` from anywhere.
+```
+Once V is installed, simply build Vib using `v .`
+
 ## Usage
 
 Bundle and sign a binary using `vib <binary path>`. The config file should have the same name as the binary but with `.vib` appended to the filename.
