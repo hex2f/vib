@@ -21,3 +21,13 @@ pub fn get_certificate_serial(identity string) string {
 	serial := raw_res.output.all_after('"snbr"<blob>=0x').all_before(' ')
 	return serial
 }
+
+pub fn create_private_key(key string) string {
+	os.execute_or_panic('openssl genrsa -out ${key}.key 2048')
+	return os.execute_or_panic('cat ${key}.key').output
+}
+
+pub fn create_csr(key string, email string, name string) string {
+	os.execute_or_panic('openssl req -new -key ${key}.key -out ${key}.csr -subj "/emailAddress=${email}/O=${name}/C=JP"')
+	return os.execute_or_panic('cat ${key}.csr').output
+}

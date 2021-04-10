@@ -1,7 +1,6 @@
 module appstoreconnect
 
 import os
-import time
 import json
 import readline
 import net.http
@@ -140,6 +139,63 @@ pub fn (c ConnectConfig) provision_profile_wizard() {
 
 	os.write_file_array(pro_file_name + '.mobileprovision', base64.decode(profile.data.attributes.profile_content)) or { panic(err) }
 	println('\nProvisioning profile saved as "${pro_file_name}.mobileprovision"')
+}
+
+pub fn (c ConnectConfig) certificate_wizard() {
+	println('=== App Store Connect Codesign Certificate wizard ===\n')
+	
+	raw_email := readline.read_line('Email (ex. foo@bar.com): ') or { return }
+	raw_name := readline.read_line('Your name (ex. Leah Lundqvist): ') or { return }
+
+	email := raw_email.trim('\n')
+	name := raw_name.trim('\n')
+
+	key_name := 'codesign_' + email.replace('.', '_').replace('@', '_').to_lower() + '_' + name.replace(' ', '_').to_lower()
+
+	if os.exists(key_name) {
+		c.error('"${key_name}" already exists. Please remove it manually.')
+	} else {
+		os.mkdir(key_name) or { panic(err) }
+	}
+
+	println('')
+
+	println('Creating private key')
+	certificates.create_private_key('${key_name}/${key_name}')
+
+	println('Creating certificate signing request')
+	csr_content := certificates.create_csr('${key_name}/${key_name}', email, name)
+
+	println('Submitting signing request to Apple')
+	res := c.create_certificate({
+		certificate_type: .development
+		csr_content: csr_content
+	})
+
+	if res.errors.len > 0 {
+		println('Failed to register certificate')
+		os.rmdir_all(key_name) or { println('Failed to clean up temp files.') }
+		c.error(res.errors.str())
+	}
+
+	println('Saving certificate')
+	content := base64.decode(res.data.attributes.certificate_content)
+	os.write_file_array('${key_name}/${key_name}.cer', content) or {
+		c.error(err.msg)
+	}
+
+	println('Generating pkcs12')
+	os.execute_or_panic('openssl x509 -in ${key_name}/${key_name}.cer -inform DER -out ${key_name}/${key_name}.pem -outform PEM')
+	os.execute_or_panic('openssl pkcs12 -export -out ${key_name}/${key_name}.p12 -inkey ${key_name}/${key_name}.key -in ${key_name}/${key_name}.pem -passout pass:password')
+
+	println('Installing certificates to the Keychain')
+	os.execute_or_panic('security import ${key_name}/${key_name}.cer -T /usr/bin/codesign')
+	os.execute_or_panic('security import ${key_name}/${key_name}.p12 -T /usr/bin/codesign -P password')
+
+	println('Cleaning up')
+	os.rmdir_all(key_name) or { println('Failed to clean up temp files.') }
+
+	println('The certificates have been installed.')
 }
 
 fn (c ConnectConfig) fetch(method http.Method, endpoint string, data string) ?string {
