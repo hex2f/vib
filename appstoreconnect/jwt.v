@@ -1,4 +1,4 @@
-// module appstoreconnect
+module appstoreconnect
 
 // import json
 // import time
