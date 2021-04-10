@@ -146,7 +146,16 @@ fn (c ConnectConfig) fetch(method http.Method, endpoint string, data string) ?st
 	res := http.fetch('https://api.appstoreconnect.apple.com/v1/$endpoint', {
 		method: method
 		data: data
-		headers: { 'Authorization': 'Bearer $c.jwt', 'Content-Type': 'application/json' }
+		header: http.new_header(
+			{
+				key: .authorization
+				value: 'Bearer $c.jwt'
+			},
+			{
+				key: .content_type
+				value: 'application/json'
+			}
+		)
 	}) or { return err }
 	return res.text
 }
