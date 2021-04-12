@@ -8,6 +8,10 @@ pub fn select_signing_identity() ?string {
 	lines := raw_res.output.split('\n')
 	// Dealing with user oriented data, mmm, love it
 	identities := lines.filter(it.contains('(')).map( it.all_after('"').all_before_last('"') )
+	if identities.len <= 0 {
+		println("No valid signing identities found. Please create one using `vib certificate`")
+		exit(0)
+	}
 	for i, identity in identities {
 		println('${i+1}) $identity')
 	}

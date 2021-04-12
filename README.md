@@ -1,5 +1,5 @@
 # V iOS Bundler
-A generic utility to bundle and sign iOS binaries.
+A generic utility to bundle and sign iOS binaries without using Xcode on macOS.
 
 ## Building
 
